@@ -1,0 +1,32 @@
+p11
+
+this is our experiment setup. the motion capture equipment is used for recording the trajectory of human writing. the working mechanism is like this. there are some laser emitters which will continuously emit laser signal, the laser reflection ball attached to the pen can give strong reflection of laser signal which will again be captured by the emitter. and the position information can then be calculated by the phase difference of the laser signal. the precision of this equipment can be at least 0.01cm, it is accurate enough for our experiment. here are some pictures we take during the experiment process.
+
+p12
+
+then i would like to show the general result of our algorithm. in this video, the red points present the position in real world wich are provided by the motion capture equipment and the green points represent the position calculated by our DMP algorithm. it is obviously that our algorithm performs very well.
+
+p12
+
+next part is about supporting the theory introduced by my partner. what we do is to study the function of different parameters in the dmp algorithm. the first thing we try to change is the number of the kernel. when the kernel number is much smaller than the sample size, the fitting result is bad, which is the green line in the trajectory picture. we also computed the euclidean distance between DMP trajectories AND ORIGINAL TRAJECTORY. the down right picture shows the relationship between the kernel number and the sum of euclidean error. when the kernel number increases to a certern level, the error seems to converge. actually, we find when the kernel number is about one fifths to one tenths of the sample size, the error will converge.
+
+p13
+
+the second parameter we study is the decay type of x. as mentioned before, when we use the exponential decay type, the x will be close to zero very quickly, which means the nonlinear part fx have nearly no influence to the acceleration. it is also proved in this trajectory picture, when there is a big curve, the acceleration changes a lot, it is not enough to just use the linear part to imitate, because it will make the acceleration to zero and the trajectory will look like a straight line.
+
+p14
+
+the third part we study is the  shape of kernel. whether a complete guassian or truncated gaussian. the result turns out to be the truncated gaussian performs better. because the truncated gaussian kernel is more indepedent with each other so their weights can be much more characteristic and the result performs better.
+
+p15
+
+next part is some comparision between the trajectory on paper in real world and the computed trajectory by our algorithms. Although the result is pretty well, there also exists one part for us to improve in the future. For a letter that needs multiple strokes to complete, like the capital A, we need to somehow delete the part when we try to lift up our pen, because this is a redundant part in the plane.
+
+p161718
+
+in this picture, you can see more clearly about how accurate our algorithm is in imitating the original trajectory.
+
+p19
+ the last part is about what we gonna to do in the future. first is to invite more people and collect their data. second, try to learn the style they write by using our algorithm and how the difference in parameter will influence the writing style. third, is try to implement our algorithm on a real robot system.
+
+
