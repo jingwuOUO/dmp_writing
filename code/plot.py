@@ -62,7 +62,7 @@ class DataPlot:
 
         plt.subplot(313)
         plt.plot(time, self.full_traj[1])
-        plt.ylim(0, 0.1)
+        plt.ylim(0, 0.2)
         plt.ylabel("Y / m")
 
         plt.xlabel(" Time (s)")

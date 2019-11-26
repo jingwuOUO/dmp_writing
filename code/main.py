@@ -5,6 +5,7 @@ import numpy as np
 import torch
 from plot import DataPlot
 from gmm import GaussianMixture
+import matplotlib.pyplot as plt
 
 def read_from_csv(filename, name):
     with open(filename) as csv_file:
@@ -112,14 +113,30 @@ if __name__ == "__main__":
         data = torch.FloatTensor(tmp)
         model.fit(data)
         result = model.predict(data)
-        print(result)
-        print(model.mu)
+        # print(result)
+        # print(model.mu)
+
+        #test mu
+        mu = np.array(model.mu)[0]
+        # print("mu", mu)
+        # plt.plot([ -i for i in full_traj[0] ], full_traj[2], "r--")
+        # plt.plot( - mu[0][0], mu[0][2], "go")
+        # plt.plot( - mu[1][0], mu[1][2], "b*")
+        #plt.show()
 
         # choose what kind of data to paint
+        PaintXYZ = True   # paint the xyz change according to time
         PaintRaw = False  # paint 3D raw data as scatter points
         PaintDMP = False   # paint 3D raw data and data processed by DMP as scatter points 
-        Segment = False   # segment 3D DMP processed points and plot them on 2D
-        PaintPaper = True  # plot DMP processed points on 2D
+        PaintPaper = False  # plot DMP processed points on 2D
+        PaintCenter = False  # plot trajectory and its point center calculated by gmm
 
-        # plot = DataPlot(name, PaintRaw, PaintDMP, Segment, PaintPaper, full_traj, dfull_traj, ddfull_traj)
-        # plot.start_plot()
+        plot = DataPlot(name, full_traj, dfull_traj, ddfull_traj)
+        if PaintXYZ == True:
+            plot.paint_xyz()
+        if PaintRaw == True:
+            plot.paint_raw()
+        if PaintDMP == True:
+            plot.paint_dmp()
+        if PaintPaper == True:
+            plot.paint_paper()
