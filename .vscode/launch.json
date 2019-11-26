@@ -10,7 +10,11 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
+<<<<<<< HEAD
             "args": ["/home/jingwu/Desktop/CS8803/Project/data/update"]
+=======
+            "args": ["/home/jingwu/Desktop/CS8803/Project/data/D"]
+>>>>>>> add_gmm
         }
     ]
 }
