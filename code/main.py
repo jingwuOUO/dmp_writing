@@ -5,10 +5,7 @@ import numpy as np
 import torch
 from plot import DataPlot
 from gmm import GaussianMixture
-<<<<<<< HEAD
-=======
 import matplotlib.pyplot as plt
->>>>>>> add_gmm
 
 def read_from_csv(filename, name):
     with open(filename) as csv_file:
@@ -67,14 +64,11 @@ if __name__ == "__main__":
     names[5] = 'E'
     names[6] = 'mm'
     names[7] = 'M'
-<<<<<<< HEAD
-=======
     names[8] = 'D1'
     names[9] = 'D2'
     names[10] = 'D3'
     names[11] = 'D4'
     names[12] = 'D5'
->>>>>>> add_gmm
 
     # Parse CSV file
     for key, name in names.items():
