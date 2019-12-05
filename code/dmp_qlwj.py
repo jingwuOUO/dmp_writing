@@ -88,8 +88,8 @@ class DynamicMP:
             for j in range(self.m):
                 up += self.w[j]*self.getPhi(self.x[i],(j+1)/self.m)
                 down += self.getPhi(self.x[i],(j+1)/self.m)
-            fx = (up/down)*self.x[i]*(self.y[self.lenth-1] - 0.3*(self.y[self.lenth-1] - self.y[0]) - self.y[0])
-            ddy1[i] = self.alpha*(self.beta* (self.y[self.lenth-1] - 0.3*(self.y[self.lenth-1] - self.y[0]) - plot_y[i-1]) - dy1[i-1]) + fx
+            fx = (up/down)*self.x[i]*(self.y[self.lenth-1] - self.y[0])
+            ddy1[i] = self.alpha*(self.beta* (self.y[self.lenth-1] - plot_y[i-1]) - dy1[i-1]) + fx
             dy1[i] = dy1[i-1] + ddy1[i-1]*self.time_delta
             plot_y[i] = plot_y[i-1] + dy1[i-1]*self.time_delta
         return plot_y

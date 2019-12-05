@@ -154,7 +154,7 @@ class DataPlot:
         plt.title('Comparision between trajectory computed by different kernel number')
         plt.legend(loc='upper right', frameon=False)            
         plt.interactive(False)
-        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/%s_dmp_compare.png' % self.name)            
+        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dmp_compare/%s_dmp_compare.png' % self.name)            
         plt.show()
         
         plt.figure(2)
@@ -165,5 +165,22 @@ class DataPlot:
         plt.ylabel('Euclidean distance/m')
         plt.title('Euclidean distance of original trajectory and trajectory computed by DMP')
         plt.legend(loc='upper right', frameon=False)
-        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/%s_euclidean_dmp_compare.png' % self.name)
+        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dmp_compare/%s_euclidean_dmp_compare.png' % self.name)
+        plt.show()
+
+    def paint_segment(self):
+        seg = Segmentation(self.full_traj, self.dfull_traj, self.ddfull_traj)
+        strokes = seg.segmentate_two()
+        for stroke in strokes:
+            vel, acc = get_vel_and_acc(stroke, self.freq)
+            dmp_stroke = dmp_process(100, stroke, vel, acc)
+            plt.plot([ -i for i in stroke[0]], stroke[2], label='stroke %d' % strokes.index(stroke), linewidth=5, alpha=0.6)
+            plt.plot([ -i for i in dmp_stroke[0]], stroke[2], label='DMP_stroke %d' % strokes.index(stroke))
+        plt.xticks(np.arange(0.45, 0.80, step=0.05))
+        plt.yticks(np.arange(0.05, 0.40, step=0.05))
+        plt.xlabel('X/m')
+        plt.ylabel('Y/m')
+        plt.title('Segmentated trajectory and trajectory computed by DMP of writing belongs to %s' % self.name[2:])
+        plt.legend(loc='upper right', frameon=False)
+        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/segment/%s_segment.png' % self.name)
         plt.show()

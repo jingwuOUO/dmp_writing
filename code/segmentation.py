@@ -48,24 +48,4 @@ class Segmentation:
         stroke0 = np.array(self.traj)[:, :seg_order[0]]
         # print("stroke0 size", stroke0)
         stroke1 = np.array(self.traj)[:, seg_order[1]:]
-        # print("stroke1 size", stroke1)
-        # while i < self.Len:
-        #     if self.traj[1][i] > 0.03 and self.traj[1][i] < 0.04 :
-        #         stroke0[0].append(self.traj[0][i])
-        #         stroke0[1].append(self.traj[1][i])
-        #         stroke0[2].append(self.traj[2][i])
-        #     else:
-        #         break
-        #     i += 1
-
-        # while i < self.Len:
-        #     if stroke == 0 and self.traj[1][i] > 0.035:
-        #         i += 1
-        #         continue
-        #     elif self.traj[1][i] < 0.035:
-        #         stroke1[0].append(self.traj[0][i])
-        #         stroke1[1].append(self.traj[1][i])
-        #         stroke1[2].append(self.traj[2][i])
-        #     i += 1
-        
         return [list(stroke0), list(stroke1)]
