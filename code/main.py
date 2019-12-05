@@ -57,19 +57,50 @@ if __name__ == "__main__":
 
     # all name of the plots
     names = {}
-    # names[0] = 'aa'
+    names[0] = 'aa'
     names[1] = 'A'
-    # names[2] = 'bb'
-    # names[3] = 'B'
-    # names[4] = 'ee'
-    # names[5] = 'E'
-    # names[6] = 'mm'
-    # names[7] = 'M'
+    names[2] = 'bb'
+    names[3] = 'B'
+    names[4] = 'ee'
+    names[5] = 'E'
+    names[6] = 'mm'
+    names[7] = 'M'
     names[8] = 'D1'
     names[9] = 'D2'
     names[10] = 'D3'
     names[11] = 'D4'
     names[12] = 'D5'
+    names[13] = 'D_JW'
+    names[14] = 'aa_JW'
+    names[15] = 'D_QL'
+    names[16] = 'aa_QL'
+    names[17] = 'D_AK'
+    names[18] = 'aa_AK'
+    names[19] = 'D_FR'
+    names[20] = 'aa_FR'
+    names[21] = 'D_GC'
+    names[22] = 'aa_GC'
+    names[23] = 'D_JCL'
+    names[24] = 'aa_JCL'
+    names[25] = 'D_LAURA'
+    names[26] = 'aa_LAURA'
+    names[27] = 'D_Leng'
+    names[28] = 'aa_Leng'
+    names[29] = 'D_Mandy'
+    names[30] = 'aa_Mandy'
+    names[31] = 'D_MEC'
+    names[32] = 'aa_MEC' 
+    names[33] = 'D_SCM'
+    names[34] = 'aa_SCM'
+    names[35] = 'D_XHP'
+    names[36] = 'aa_XHP'
+    names[37] = 'D_YFC'
+    names[38] = 'aa_YFC'
+    names[39] = 'D_YTZ'
+    names[40] = 'aa_YTZ'
+    names[41] = 'D_YY'
+    names[42] = 'aa_YY'
+
 
     # Parse CSV file
     for key, name in names.items():
@@ -142,10 +173,8 @@ if __name__ == "__main__":
         # plt.show()
 
         seg = Segmentation(full_traj, dfull_traj, ddfull_traj)
-        strokes = seg.segmentate_three()
+        strokes = seg.segmentate_two()
         for stroke in strokes:
-            # s_plot = DataPlot(name, stroke)
-            # s_plot.paint_paper()
             plt.plot(stroke[0], stroke[2])
         plt.show()
 
