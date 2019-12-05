@@ -4,6 +4,7 @@ from dmp_qlwj import DynamicMP
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
 
 def get_d_xyz(x, len, freq):
     dx = np.zeros(len)
@@ -15,7 +16,7 @@ def get_d_xyz(x, len, freq):
     return dx
 
 # input the traj, get the velocity and acceleration of the traj
-def get_vel_and_pos(x, freq):
+def get_vel_and_acc(x, freq):
     dx = get_d_xyz(x[0], len(x[0]), freq)
     ddx = get_d_xyz(dx, len(dx), freq)
     dy = get_d_xyz(x[1], len(x[1]), freq)
@@ -39,18 +40,24 @@ def dmp_process(m, traj, dtraj, ddtraj, shape=0, linear=0):
 
 class DataPlot:
 
-    def __init__(self, name, full_traj, dfull_traj, ddfull_traj):
+    def __init__(self, name, full_traj, dfull_traj=None, ddfull_traj=None):
         
         self.name = name
         self.full_traj = full_traj
-        self.dfull_traj = dfull_traj
-        self.ddfull_traj = ddfull_traj
         self.freq = 120
+        if dfull_traj == None or ddfull_traj == None:
+            self.dfull_traj, self.ddfull_traj = get_vel_and_acc(self.full_traj, self.freq)
+        else:
+            self.dfull_traj = dfull_traj
+            self.ddfull_traj = ddfull_traj
+        
 
     def paint_xyz(self):
         n = range(0, len(self.full_traj[0]))
         time = [1/ self.freq * i for i in n]
 
+        # x, y, z
+        plt.figure(1)
         plt.subplot(311)
         plt.title(" The X Z Y coordinate change according to Time")
         plt.plot(time, self.full_traj[0])
@@ -64,6 +71,47 @@ class DataPlot:
         plt.plot(time, self.full_traj[1])
         plt.ylim(0, 0.2)
         plt.ylabel("Y / m")
+
+        plt.xlabel(" Time (s)")
+        # plt.interactive(False)
+        plt.show()
+
+        # dx, dy, dz
+        plt.figure(2)
+        plt.subplot(311)
+        plt.title(" The dX dZ dY coordinate change according to Time")
+        plt.plot(time, self.dfull_traj[0])
+        plt.ylabel("dX / m")
+
+        plt.subplot(312)
+        plt.plot(time, self.dfull_traj[2])
+        plt.ylabel("dZ / m")
+
+        plt.subplot(313)
+        plt.plot(time, self.dfull_traj[1])
+        # plt.ylim(0, 0.2)
+        plt.ylabel("dY / m")
+
+        plt.xlabel(" Time (s)")
+        # plt.interactive(False)
+        plt.show()
+
+
+        # ddx, ddy, ddz
+        plt.figure(3)
+        plt.subplot(311)
+        plt.title(" The dX dZ dY coordinate change according to Time")
+        plt.plot(time, self.ddfull_traj[0])
+        plt.ylabel("ddX / m")
+
+        plt.subplot(312)
+        plt.plot(time, self.ddfull_traj[2])
+        plt.ylabel("ddZ / m")
+
+        plt.subplot(313)
+        plt.plot(time, self.ddfull_traj[1])
+        # plt.ylim(0, 0.2)
+        plt.ylabel("ddY / m")
 
         plt.xlabel(" Time (s)")
         plt.show()
