@@ -1,5 +1,6 @@
 from segmentation import Segmentation
 from dmp_qlwj import DynamicMP
+from dmp_qlwj import Bad_DynamicMP
 
 import numpy as np
 import math
@@ -28,13 +29,22 @@ def get_vel_and_acc(x, freq):
     return vel, acc
 
 # imput the traj, the velocity of this traj and the acceleration , the output is the traj processed by dmp algorithm
-def dmp_process(m, traj, dtraj, ddtraj, shape=0, linear=0):
-    process_x = DynamicMP(m, traj[0], dtraj[0], ddtraj[0], len(traj[0]), shape, linear)
-    xx = process_x.getddy1()
-    process_y = DynamicMP(m, traj[1], dtraj[1], ddtraj[1], len(traj[1]), shape, linear)
-    yy = process_y.getddy1()
-    process_z = DynamicMP(m, traj[2], dtraj[2], ddtraj[2], len(traj[2]), shape, linear)
-    zz = process_z.getddy1()
+def dmp_process(m, traj, dtraj, ddtraj, start_error=0, goal_error=0, dmp_choose=True, shape=0, linear=0):
+
+    if dmp_choose == True:
+        process_x = DynamicMP(m, traj[0], dtraj[0], ddtraj[0], len(traj[0]), shape, linear)
+        xx = process_x.getddy1()
+        process_y = DynamicMP(m, traj[1], dtraj[1], ddtraj[1], len(traj[1]), shape, linear)
+        yy = process_y.getddy1()
+        process_z = DynamicMP(m, traj[2], dtraj[2], ddtraj[2], len(traj[2]), shape, linear)
+        zz = process_z.getddy1()
+    else:
+        process_x = Bad_DynamicMP(m, traj[0], dtraj[0], ddtraj[0], len(traj[0]), start_error, goal_error, shape, linear)
+        xx = process_x.getddy1()
+        process_y = Bad_DynamicMP(m, traj[1], dtraj[1], ddtraj[1], len(traj[1]), start_error, goal_error, shape, linear)
+        yy = process_y.getddy1()
+        process_z = Bad_DynamicMP(m, traj[2], dtraj[2], ddtraj[2], len(traj[2]), start_error, goal_error, shape, linear)
+        zz = process_z.getddy1()
     dmp_traj = [xx, yy, zz]
     return dmp_traj    
 
@@ -136,12 +146,12 @@ class DataPlot:
 
     def paint_paper(self):
         number = np.arange(0, len(self.full_traj[0])).tolist()
-        dmp100 = dmp_process(20, self.full_traj, self.dfull_traj, self.ddfull_traj)
-        dmp300 = dmp_process(50, self.full_traj, self.dfull_traj, self.ddfull_traj)
-        dmp600 = dmp_process(100, self.full_traj, self.dfull_traj, self.ddfull_traj)
-        # dmp1000 = dmp_process(200, full_traj, dfull_traj, ddfull_traj)
-        error1 = [math.sqrt((dmp100[0][i] - self.full_traj[0][i])**2 + (dmp100[2][i] - self.full_traj[2][i])**2) for i in range(len(self.full_traj[0]))]
-        error2 = [math.sqrt((dmp300[0][i] - self.full_traj[0][i])**2 + (dmp300[2][i] - self.full_traj[2][i])**2) for i in range(len(self.full_traj[0]))]
+        # dmp100 = dmp_process(20, self.full_traj, self.dfull_traj, self.ddfull_traj)
+        # dmp300 = dmp_process(50, self.full_traj, self.dfull_traj, self.ddfull_traj)
+        # dmp600 = dmp_process(100, self.full_traj, self.dfull_traj, self.ddfull_traj)
+        dmp600 = dmp_process(100, self.full_traj, self.dfull_traj, self.ddfull_traj, False, 0.01, 0.2)
+        # error1 = [math.sqrt((dmp100[0][i] - self.full_traj[0][i])**2 + (dmp100[2][i] - self.full_traj[2][i])**2) for i in range(len(self.full_traj[0]))]
+        # error2 = [math.sqrt((dmp300[0][i] - self.full_traj[0][i])**2 + (dmp300[2][i] - self.full_traj[2][i])**2) for i in range(len(self.full_traj[0]))]
         error3 = [math.sqrt((dmp600[0][i] - self.full_traj[0][i])**2 + (dmp600[2][i] - self.full_traj[2][i])**2) for i in range(len(self.full_traj[0]))]
         
         plt.figure(1)
@@ -158,8 +168,8 @@ class DataPlot:
         plt.show()
         
         plt.figure(2)
-        plt.plot(number, error1, 'g', label='DMP kernel = 20')
-        plt.plot(number, error2, 'chocolate', label='DMP kernel = 50' )
+        # plt.plot(number, error1, 'g', label='DMP kernel = 20')
+        # plt.plot(number, error2, 'chocolate', label='DMP kernel = 50' )
         plt.plot(number, error3, 'b', label='DMP kernel = 100' )
         plt.xlabel('N')
         plt.ylabel('Euclidean distance/m')
