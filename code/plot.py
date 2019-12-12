@@ -30,13 +30,16 @@ def get_vel_and_acc(x, freq):
 
 # imput the traj, the velocity of this traj and the acceleration , the output is the traj processed by dmp algorithm
 def dmp_process(m, traj, dtraj, ddtraj, start_error=0, goal_error=0, dmp_choose=True, shape=0, linear=0):
+    '''
+        imput the traj, the velocity of this traj and the acceleration , the output is the traj processed by dmp algorithm
+    '''
 
     if dmp_choose == True:
-        process_x = DynamicMP(m, traj[0], dtraj[0], ddtraj[0], len(traj[0]), shape, linear)
+        process_x = DynamicMP(m, traj[0], dtraj[0], ddtraj[0], len(traj[0]), start_error, goal_error, shape, linear)
         xx = process_x.getddy1()
-        process_y = DynamicMP(m, traj[1], dtraj[1], ddtraj[1], len(traj[1]), shape, linear)
+        process_y = DynamicMP(m, traj[1], dtraj[1], ddtraj[1], len(traj[1]), start_error, goal_error, shape, linear)
         yy = process_y.getddy1()
-        process_z = DynamicMP(m, traj[2], dtraj[2], ddtraj[2], len(traj[2]), shape, linear)
+        process_z = DynamicMP(m, traj[2], dtraj[2], ddtraj[2], len(traj[2]), start_error, goal_error, shape, linear)
         zz = process_z.getddy1()
     else:
         process_x = Bad_DynamicMP(m, traj[0], dtraj[0], ddtraj[0], len(traj[0]), start_error, goal_error, shape, linear)
@@ -146,36 +149,45 @@ class DataPlot:
 
     def paint_paper(self):
         number = np.arange(0, len(self.full_traj[0])).tolist()
+        goal_error = 0.0
+        dmp_kind = False
         # dmp100 = dmp_process(20, self.full_traj, self.dfull_traj, self.ddfull_traj)
         # dmp300 = dmp_process(50, self.full_traj, self.dfull_traj, self.ddfull_traj)
         # dmp600 = dmp_process(100, self.full_traj, self.dfull_traj, self.ddfull_traj)
-        dmp600 = dmp_process(100, self.full_traj, self.dfull_traj, self.ddfull_traj, False, 0.01, 0.2)
+        dmp600 = dmp_process(200, self.full_traj, self.dfull_traj, self.ddfull_traj, 0.0, goal_error, dmp_kind)
         # error1 = [math.sqrt((dmp100[0][i] - self.full_traj[0][i])**2 + (dmp100[2][i] - self.full_traj[2][i])**2) for i in range(len(self.full_traj[0]))]
         # error2 = [math.sqrt((dmp300[0][i] - self.full_traj[0][i])**2 + (dmp300[2][i] - self.full_traj[2][i])**2) for i in range(len(self.full_traj[0]))]
         error3 = [math.sqrt((dmp600[0][i] - self.full_traj[0][i])**2 + (dmp600[2][i] - self.full_traj[2][i])**2) for i in range(len(self.full_traj[0]))]
+
+        if dmp_kind == False:
+            name1 =  self.name + str(goal_error) + 'a.png'
+            name2 =  self.name + str(goal_error) + 'a_Euclidean_distance.png'
+        else:
+            name1 = 'good_' + self.name + str(goal_error) + 'a.png'
+            name2 = 'good_' + self.name + str(goal_error) + 'a_Euclidean_distance.png'
         
         plt.figure(1)
         plt.plot([ -i for i in self.full_traj[0]], self.full_traj[2], 'r', label='original trajectory', linewidth=5, alpha=0.6)
         # plt.plot([ -i for i in dmp100[0]], dmp100[2], 'g', label='DMP kernel = 20')
         # plt.plot([ -i for i in dmp300[0]], dmp300[2], 'chocolate', label='DMP kernel = 50' )
-        plt.plot([ -i for i in dmp600[0]], dmp600[2], 'b', label='DMP kernel = 100' )
+        plt.plot([ -i for i in dmp600[0]], dmp600[2], 'b', label='DMP kernel = 200' )
         plt.xlabel('X/m')
         plt.ylabel('Y/m')
         plt.title('Comparision between trajectory computed by different kernel number')
         plt.legend(loc='upper right', frameon=False)            
         plt.interactive(False)
-        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dmp_compare/%s_dmp_compare.png' % self.name)            
+        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dmp_compare/%s' % name1)            
         plt.show()
         
         plt.figure(2)
         # plt.plot(number, error1, 'g', label='DMP kernel = 20')
         # plt.plot(number, error2, 'chocolate', label='DMP kernel = 50' )
-        plt.plot(number, error3, 'b', label='DMP kernel = 100' )
+        plt.plot(number, error3, 'b', label='DMP kernel = 200' )
         plt.xlabel('N')
         plt.ylabel('Euclidean distance/m')
         plt.title('Euclidean distance of original trajectory and trajectory computed by DMP')
         plt.legend(loc='upper right', frameon=False)
-        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dmp_compare/%s_euclidean_dmp_compare.png' % self.name)
+        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dmp_compare/%s' % name2)
         plt.show()
 
     def paint_segment(self):
@@ -193,4 +205,41 @@ class DataPlot:
         plt.title('Segmentated trajectory and trajectory computed by DMP of writing belongs to %s' % self.name[2:])
         plt.legend(loc='upper right', frameon=False)
         plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/segment/%s_segment.png' % self.name)
+        plt.show()
+
+    def paint_seg_xz(self):
+        seg = Segmentation(self.full_traj, self.dfull_traj, self.ddfull_traj)
+        stroke2 = seg.segmentate_two()[1]
+        vel, acc = get_vel_and_acc(stroke2, self.freq)
+
+        goal_error = 0.1
+        dmp_kind = True
+
+        dmp_stroke = dmp_process(200, stroke2, vel, acc, 0, goal_error, dmp_kind)
+        if dmp_kind == False:
+            name1 =  str(goal_error) + '_D_xy_segment.png'
+            name2 =  str(goal_error) + '_D_xy_absolute_distance.png'
+        else:
+            name1 = 'good_' + str(goal_error) + '_D_xy_segment.png'
+            name2 = 'good_' + str(goal_error) + '_D_xy_absolute_distance.png'
+        
+        plt.figure(1)
+        plt.plot((1/self.freq)*np.arange(len(stroke2[0])), [-i for i in stroke2[0]], label='original x coordinate', linewidth=5, alpha=0.6)
+        plt.plot((1/self.freq)*np.arange(len(stroke2[0])), [-i for i in dmp_stroke[0]], label='dmp x coordinate')
+        plt.xlabel('t/sec')
+        plt.ylabel('x/m')
+        plt.title('x/m coordinate changing with time/sec')
+        plt.legend(loc='upper right', frameon=False)
+        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dmp_compare/%s'% name1)
+        plt.interactive(False)
+        plt.show()
+
+        plt.figure(2)
+        error = [abs(dmp_stroke[0][i] - stroke2[0][i]) for i in range(len(stroke2[0]))]
+        plt.plot(range(len(stroke2[0])), error, 'b')
+        plt.xlabel('N')
+        plt.ylabel('Absolute distance/m')
+        plt.title('Absolute distance of original trajectory and trajectory computed by DMP')
+        plt.legend(loc='upper right', frameon=False)
+        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dmp_compare/%s' % name2)
         plt.show()

@@ -2,15 +2,15 @@ import numpy as np
 import math
 
 class DynamicMP:
-    alpha = 0.4
-    beta = 0.8
+    alpha = 0.4 * 10
+    beta = 0.8 * 10
     # self.m = 300
     freq = 120
     time_delta = 1 / freq
     ci = 0
 
 
-    def __init__(self, m, y_all_i, dy_all_i, ddy0_all_i, lenth, shape=0, linear=0):
+    def __init__(self, m, y_all_i, dy_all_i, ddy0_all_i, lenth, start_error=0, goal_error=0, shape=0, linear=0):
 
         # self.ci = i/8
         self.m = m
@@ -25,7 +25,8 @@ class DynamicMP:
         self.Phi = np.zeros((self.lenth, self.lenth), dtype=np.float)
         self.f = np.zeros((self.lenth, 1), dtype=np.float)
         self.w = np.zeros((self.m, 1), dtype=np.float)
-
+        self.start_error = start_error
+        self.goal_error = goal_error
 
     def getX(self):
         for i in range(self.lenth):
@@ -79,7 +80,7 @@ class DynamicMP:
         dy1 = np.zeros((self.lenth, 1), dtype=np.float)
         self.getW()
         ddy1[0] = 0
-        plot_y[0] = self.y[0]
+        plot_y[0] = self.y[0] + self.start_error
         dy1[0] = self.dy[0]
         for i in range(1, self.lenth):
             up = 0
@@ -87,11 +88,11 @@ class DynamicMP:
             for j in range(self.m):
                 up += self.w[j]*self.getPhi(self.x[i],(j+1)/self.m)
                 down += self.getPhi(self.x[i],(j+1)/self.m)
-            #fx = (up/down)*self.x[i]*(self.y[self.lenth-1] - self.y[0])
+            # fx = (up/down)*self.x[i]*(self.y[self.lenth-1] - self.y[0])
+            # ddy1[i] = (self.alpha*(self.beta* (self.y[self.lenth-1] - plot_y[i-1]) - dy1[i-1]) + fx)
             fx = (up/down)*self.x[i]*self.alpha*self.beta
-            #ddy1[i] = (self.alpha*(self.beta* (self.y[self.lenth-1]+0.2*(self.y[self.lenth-1]-self.y[0]) - plot_y[i-1]) - dy1[i-1]) + fx)
-            ddy1[i] = self.alpha*(self.beta* (self.y[self.lenth-1]+4.0*(self.y[self.lenth-1]-self.y[0]) - plot_y[i-1]) - dy1[i-1]) \
-                     + fx - self.x[i]*self.alpha*self.beta* (self.y[self.lenth-1]+4.0*(self.y[self.lenth-1]-self.y[0]) - self.y[0])
+            ddy1[i] = self.alpha*(self.beta* (self.y[self.lenth-1]+self.goal_error - plot_y[i-1]) - dy1[i-1]) \
+                     + fx - self.x[i]*self.alpha*self.beta* (self.y[self.lenth-1]+self.goal_error - self.y[0])
             dy1[i] = dy1[i-1] + ddy1[i-1]*self.time_delta
             plot_y[i] = plot_y[i-1] + dy1[i-1]*self.time_delta
         return plot_y
@@ -99,8 +100,8 @@ class DynamicMP:
 
 
 class Bad_DynamicMP:
-    alpha = 0.4
-    beta = 0.8
+    alpha = 0.4 * 10
+    beta = 0.8 * 10
     # self.m = 300
     freq = 120
     time_delta = 1 / freq
@@ -186,7 +187,7 @@ class Bad_DynamicMP:
             for j in range(self.m):
                 up += self.w[j]*self.getPhi(self.x[i],(j+1)/self.m)
                 down += self.getPhi(self.x[i],(j+1)/self.m)
-            fx = (up/down)*self.x[i]*(self.y[self.lenth-1] - self.y[0])
+            fx = (up/down)*self.x[i]*(self.y[self.lenth-1]+self.goal_error - self.y[0])
             ddy1[i] = (self.alpha*(self.beta* (self.y[self.lenth-1]+self.goal_error - plot_y[i-1]) - dy1[i-1]) + fx)
             dy1[i] = dy1[i-1] + ddy1[i-1]*self.time_delta
             plot_y[i] = plot_y[i-1] + dy1[i-1]*self.time_delta

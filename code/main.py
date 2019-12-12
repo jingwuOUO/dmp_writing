@@ -66,16 +66,16 @@ if __name__ == "__main__":
     # names[6] = 'mm'
     # names[7] = 'M'
     # names[8] = 'D1'
-    names[9] = 'D2'
-    names[10] = 'D3'
-    names[11] = 'D4'
-    names[12] = 'D5'
-    # names[13] = 'D_JW'
-    # names[14] = 'aa_JW'
+    # names[9] = 'D2'
+    # names[10] = 'D3'
+    # names[11] = 'D4'
+    # names[12] = 'D5'
+    names[13] = 'D_JW'
+    names[14] = 'aa_JW'
     # names[15] = 'D_QL'
     # names[16] = 'aa_QL'
-    # names[17] = 'D_AK'
-    # names[18] = 'aa_AK'
+    names[17] = 'D_AK'
+    names[18] = 'aa_AK'
     # names[19] = 'D_FR'
     # names[20] = 'aa_FR'
     # names[21] = 'D_GC'
@@ -86,8 +86,8 @@ if __name__ == "__main__":
     # names[26] = 'aa_LAURA'
     # names[27] = 'D_Leng'
     # names[28] = 'aa_Leng'
-    # names[29] = 'D_Mandy'
-    # names[30] = 'aa_Mandy'
+    names[29] = 'D_Mandy'
+    names[30] = 'aa_Mandy'
     # names[31] = 'D_MEC'
     # names[32] = 'aa_MEC' 
     # names[33] = 'D_SCM'
@@ -179,6 +179,7 @@ if __name__ == "__main__":
         PaintDMP = False   # paint 3D raw data and data processed by DMP as scatter points 
         PaintPaper = True  # plot DMP processed points on 2D
         PaintSegment = False  # plot strokes on 2D
+        PaintSeg_XZ = False  # segment D and plot stroke2 of D in x according to time
 
         plot = DataPlot(name, full_traj, dfull_traj, ddfull_traj)
         if PaintXYZ == True:
@@ -191,3 +192,5 @@ if __name__ == "__main__":
             plot.paint_paper()
         if PaintSegment == True:
             plot.paint_segment()
+        if PaintSeg_XZ == True:
+            plot.paint_seg_xz()
