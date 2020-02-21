@@ -1,6 +1,7 @@
 from segmentation import Segmentation
 from dmp_qlwj import DynamicMP
 from dmp_qlwj import Bad_DynamicMP
+from generate import generate_data
 
 import numpy as np
 import math
@@ -31,7 +32,8 @@ def get_vel_and_acc(x, freq):
 # imput the traj, the velocity of this traj and the acceleration , the output is the traj processed by dmp algorithm
 def dmp_process(m, traj, dtraj, ddtraj, start_error=0, goal_error=0, dmp_choose=True, shape=0, linear=0):
     '''
-        imput the traj, the velocity of this traj and the acceleration , the output is the traj processed by dmp algorithm
+        input the traj, the velocity of this traj and the acceleration , the output is the traj processed by dmp algorithm
+        @param dmp_choose, set true to use DMP++, false to Bad_DMP
     '''
 
     if dmp_choose == True:
@@ -86,6 +88,7 @@ class DataPlot:
         plt.ylabel("Y / m")
 
         plt.xlabel(" Time (s)")
+        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/XYZ')
         # plt.interactive(False)
         plt.show()
 
@@ -106,14 +109,15 @@ class DataPlot:
         plt.ylabel("dY / m")
 
         plt.xlabel(" Time (s)")
-        # plt.interactive(False)
+        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dXYZ')
+        plt.interactive(False)
         plt.show()
 
 
         # ddx, ddy, ddz
         plt.figure(3)
         plt.subplot(311)
-        plt.title(" The dX dZ dY coordinate change according to Time")
+        plt.title(" The ddX ddZ ddY coordinate change according to Time")
         plt.plot(time, self.ddfull_traj[0])
         plt.ylabel("ddX / m")
 
@@ -127,6 +131,7 @@ class DataPlot:
         plt.ylabel("ddY / m")
 
         plt.xlabel(" Time (s)")
+        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/ddXYZ')
         plt.show()
 
     def paint_raw(self):
@@ -145,19 +150,21 @@ class DataPlot:
         ax.scatter(self.full_traj[0], self.full_traj[1], self.full_traj[2], c='r')
         ax.scatter(dmp_traj[0], dmp_traj[1], dmp_traj[2], c='g')
         plt.show()
+        generate_data(dmp_traj, self.name)
         # plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/%s_dmp.png' % self.name)
 
     def paint_paper(self):
         number = np.arange(0, len(self.full_traj[0])).tolist()
         goal_error = 0.0
         dmp_kind = False
-        # dmp100 = dmp_process(20, self.full_traj, self.dfull_traj, self.ddfull_traj)
-        # dmp300 = dmp_process(50, self.full_traj, self.dfull_traj, self.ddfull_traj)
+        dmp100 = dmp_process(200, self.full_traj, self.dfull_traj, self.ddfull_traj, 0, 0, dmp_kind, 1)
+        dmp300 = dmp_process(200, self.full_traj, self.dfull_traj, self.ddfull_traj, 0, 0, dmp_kind, 0)
         # dmp600 = dmp_process(100, self.full_traj, self.dfull_traj, self.ddfull_traj)
-        dmp600 = dmp_process(200, self.full_traj, self.dfull_traj, self.ddfull_traj, 0.0, goal_error, dmp_kind)
+        dmp800 = dmp_process(200, self.full_traj, self.dfull_traj, self.ddfull_traj, 0, 0, dmp_kind, 3)
+        dmp600 = dmp_process(200, self.full_traj, self.dfull_traj, self.ddfull_traj, 0, 0, dmp_kind, 2)
         # error1 = [math.sqrt((dmp100[0][i] - self.full_traj[0][i])**2 + (dmp100[2][i] - self.full_traj[2][i])**2) for i in range(len(self.full_traj[0]))]
         # error2 = [math.sqrt((dmp300[0][i] - self.full_traj[0][i])**2 + (dmp300[2][i] - self.full_traj[2][i])**2) for i in range(len(self.full_traj[0]))]
-        error3 = [math.sqrt((dmp600[0][i] - self.full_traj[0][i])**2 + (dmp600[2][i] - self.full_traj[2][i])**2) for i in range(len(self.full_traj[0]))]
+        # error3 = [math.sqrt((dmp600[0][i] - self.full_traj[0][i])**2 + (dmp600[2][i] - self.full_traj[2][i])**2) for i in range(len(self.full_traj[0]))]
 
         if dmp_kind == False:
             name1 =  self.name + str(goal_error) + 'a.png'
@@ -167,27 +174,33 @@ class DataPlot:
             name2 = 'good_' + self.name + str(goal_error) + 'a_Euclidean_distance.png'
         
         plt.figure(1)
-        plt.plot([ -i for i in self.full_traj[0]], self.full_traj[2], 'r', label='original trajectory', linewidth=5, alpha=0.6)
+        plt.plot([ -i for i in self.full_traj[0]], self.full_traj[2], 'black', label='original trajectory', linewidth=3, alpha=0.6)
+        plt.plot([ -i for i in dmp100[0]], dmp100[2], 'g', label='standard gaussian kernel')
+        plt.plot([ -i for i in dmp300[0]], dmp300[2], 'r', label='truncated kernel, width = 1/2N' )
+        plt.plot([ -i for i in dmp800[0]], dmp800[2], 'b', label='truncated kernel, width = 1/3N' )
+        plt.plot([ -i for i in dmp600[0]], dmp600[2], 'orange', label='truncated kernel, width = 5/N' )
+        # plt.plot([ -i for i in self.full_traj[0]], self.full_traj[2], 'r', label='original trajectory', linewidth=5, alpha=0.6)
         # plt.plot([ -i for i in dmp100[0]], dmp100[2], 'g', label='DMP kernel = 20')
         # plt.plot([ -i for i in dmp300[0]], dmp300[2], 'chocolate', label='DMP kernel = 50' )
-        plt.plot([ -i for i in dmp600[0]], dmp600[2], 'b', label='DMP kernel = 200' )
-        plt.xlabel('X/m')
-        plt.ylabel('Y/m')
-        plt.title('Comparision between trajectory computed by different kernel number')
+        # plt.plot([ -i for i in dmp600[0]], dmp600[2], 'b', label='DMP kernel = 200' )
+        # plt.plot([ -i for i in dmp800[0]], dmp800[2], 'b', label='DMP kernel = 200' )
+        plt.xlabel('X(m)')
+        plt.ylabel('Y(m)')
+        # plt.title('Comparision between trajectory computed by different kernel number')
         plt.legend(loc='upper right', frameon=False)            
         plt.interactive(False)
-        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dmp_compare/%s' % name1)            
+        # plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dmp_compare/%s' % name1)            
         plt.show()
         
-        plt.figure(2)
+        # plt.figure(2)
         # plt.plot(number, error1, 'g', label='DMP kernel = 20')
         # plt.plot(number, error2, 'chocolate', label='DMP kernel = 50' )
-        plt.plot(number, error3, 'b', label='DMP kernel = 200' )
-        plt.xlabel('N')
-        plt.ylabel('Euclidean distance/m')
-        plt.title('Euclidean distance of original trajectory and trajectory computed by DMP')
-        plt.legend(loc='upper right', frameon=False)
-        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dmp_compare/%s' % name2)
+        # plt.plot(number, error3, 'b', label='DMP kernel = 200' )
+        # plt.xlabel('N')
+        # plt.ylabel('Euclidean distance/m')
+        # plt.title('Euclidean distance of original trajectory and trajectory computed by DMP')
+        # plt.legend(loc='upper right', frameon=False)
+        # plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dmp_compare/%s' % name2)
         plt.show()
 
     def paint_segment(self):
@@ -243,3 +256,55 @@ class DataPlot:
         plt.legend(loc='upper right', frameon=False)
         plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dmp_compare/%s' % name2)
         plt.show()
+
+    def create_letter(self):
+        seg = Segmentation(self.full_traj, self.dfull_traj, self.ddfull_traj)
+        strokes = seg.segmentate_two()
+
+        # create p
+        # for stroke in strokes:
+        #     vel, acc = get_vel_and_acc(stroke, self.freq)
+        #     if strokes.index(stroke) == 0:
+        #         dmp_stroke = dmp_process(200, stroke, vel, acc)
+        #     if strokes.index(stroke) == 1:
+        #         z_change = dmp_process(200, stroke, vel, acc, 0, 0.15)
+        #         dmp_stroke = dmp_process(200, stroke, vel, acc)
+        #         dmp_stroke[2] = z_change[2]
+        #     # plt.plot([ -i for i in stroke[0]], stroke[2], label='stroke %d' % strokes.index(stroke), linewidth=5, alpha=0.6)
+        #     plt.plot([ -i for i in dmp_stroke[0]], dmp_stroke[2], label='DMP_stroke %d' % strokes.index(stroke))
+
+        # create B
+        # for stroke in strokes:
+        #     vel, acc = get_vel_and_acc(stroke, self.freq)
+        #     if strokes.index(stroke) == 0:
+        #         dmp_stroke = dmp_process(200, stroke, vel, acc)
+        #     if strokes.index(stroke) == 1:
+        #         z_change = dmp_process(200, stroke, vel, acc, 0, 0.15)
+        #         dmp_stroke = dmp_process(200, stroke, vel, acc)
+        #         dmp_stroke[2] = z_change[2]
+        #     # plt.plot([ -i for i in stroke[0]], stroke[2], label='stroke %d' % strokes.index(stroke), linewidth=5, alpha=0.6)
+        #     plt.plot([ -i for i in dmp_stroke[0]], dmp_stroke[2], label='DMP_stroke %d' % strokes.index(stroke))
+        
+        # zz_change = dmp_process(200, strokes[-1], vel, acc, -0.15, 0)
+        # dmp_stroke2 = dmp_process(200, strokes[-1], vel, acc)
+        # dmp_stroke2[2] = zz_change[2]
+        # plt.plot([ -i for i in dmp_stroke2[0]], dmp_stroke2[2], label='DMP_stroke 3')
+
+        # create D
+        for stroke in strokes:
+            vel, acc = get_vel_and_acc(stroke, self.freq)
+            zdmp_stroke = dmp_process(200, stroke, vel, acc, 0.0, -0.1)
+            xdmp_stroke = dmp_process(200, stroke, vel, acc, 0.0, 0.1)
+            plt.plot([ -i for i in xdmp_stroke[0]], zdmp_stroke[2], label='DMP_stroke %d' % strokes.index(stroke))
+
+        plt.xticks(np.arange(0.35, 0.70, step=0.05))
+        plt.yticks(np.arange(0.10, 0.40, step=0.05))
+        plt.xlabel('X/m')
+        plt.ylabel('Y/m')
+        plt.title('Create new letter by DMP of writing belongs to %s' % self.name[2:])
+        plt.legend(loc='upper right', frameon=False)
+        # plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/%s_new_letter.png' % self.name)
+        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/%s_B.png')
+        plt.show()
+
+        

@@ -145,12 +145,27 @@ class Bad_DynamicMP:
 
     def getPhi(self,x,c):
         if self.shape == 0:
-            if abs(x - c) <= (1/self.m):
-                return math.exp(-math.pow(x-c, 2))
+            if abs(x - c) <= (1/2/self.m):
+            #if abs(x - c) <= (1/10):
+                #return math.exp(-math.pow(x-c, 2))
+                return math.exp(-math.pow(x-c, 2)/(2*0.02**2))
             else:
                 return 0
         elif self.shape == 1:
             return math.exp(-math.pow(x-c, 2)/(2*0.02**2))
+        elif self.shape == 2:
+            if abs(x - c) <= (1/3/self.m):
+            #if abs(x - c) <= (1/10):
+                return math.exp(-math.pow(x-c, 2)/(2*0.02**2))
+            else:
+                return 1e-10
+        elif self.shape == 3:
+            if abs(x - c) <= (5/self.m):
+            #if abs(x - c) <= (1/10):
+                return math.exp(-math.pow(x-c, 2)/(2*0.02**2))
+            else:
+                return 0
+        
 
     def getPhi_matrix(self):
         for i in range(self.lenth):
