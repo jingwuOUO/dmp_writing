@@ -48,4 +48,5 @@ class Segmentation:
         stroke0 = np.array(self.traj)[:, :seg_order[0]]
         # print("stroke0 size", stroke0)
         stroke1 = np.array(self.traj)[:, seg_order[1]:]
+        print("----------------------------------Finished segmentation!------------------------------------------")
         return [list(stroke0), list(stroke1)]

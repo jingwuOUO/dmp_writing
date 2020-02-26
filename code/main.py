@@ -53,13 +53,13 @@ if __name__ == "__main__":
     for info in os.listdir(args.path):
         file_path.append(os.path.join(domain, info))
     file_path.sort()
-    print(file_path)
+    # print(file_path)
 
     # all name of the plots
     # names = ['aa', 'A', 'bb', 'B', 'ee', 'E', 'mm', 'M', 'D1', 'D2', 'D3', 'D4', 'D5', 'D_JW', 'aa_JW', 'D_QL', 'aa_QL', 'D_AK', 'aa_AK', 'D_FR', 'aa_FR', 'D_GC', 'aa_GC',\
     #         'D_JCL', 'aa_JCL', 'D_LAURA', 'aa_LAURA', 'D_Leng', 'aa_Leng', 'D_Mandy', 'aa_Mandy', 'D_MEC', 'aa_MEC', 'D_SCM', 'aa_SCM', 'D_XHP', 'aa_XHP', 'D_YFC', 'aa_YFC',\
     #         'D_YTZ', 'aa_YTZ', 'D_YY', 'aa_YY']
-    names = ['aa_JW']
+    names = ['aa_JW', 'D_JW']
 
     # Parse CSV file
     for name in names:
@@ -95,28 +95,34 @@ if __name__ == "__main__":
             dfull_traj[degree] = get_d_xyz(full_traj[degree], len(full_traj[degree]), freq)
             ddfull_traj[degree] = get_d_xyz(dfull_traj[degree], len(dfull_traj[degree]), freq)
             degree += 1
+        print("----------------------------------Finished reading data-------------------------------------------")
 
         # choose what kind of data to paint
         PaintXYZ = False   # paint the xyz change according to time
         PaintRaw = False  # paint 3D raw data as scatter points
-        PaintDMP = False   # paint 3D raw data and data processed by DMP as scatter points 
-        PaintPaper = True    # plot DMP processed points on 2D
+        PaintDMP = True  # paint 3D raw data and data processed by DMP as scatter points 
+        PaintPaper = False   # plot DMP processed points on 2D
         PaintSegment = False  # plot strokes on 2D
         PaintSeg_XZ = False  # segment D and plot stroke2 of D in x according to time
         Creat_letter = False  # segment D and sue it to create P/B/D
 
         plot = DataPlot(name, full_traj, dfull_traj, ddfull_traj)
-        if PaintXYZ == True:
-            plot.paint_xyz()
-        if PaintRaw == True:
-            plot.paint_raw()
-        if PaintDMP == True:
-            plot.paint_dmp()
-        if PaintPaper == True:
-            plot.paint_paper()
-        if PaintSegment == True:
-            plot.paint_segment()
-        if PaintSeg_XZ == True:
-            plot.paint_seg_xz()
-        if Creat_letter == True:
-            plot.create_letter()
+        # if PaintXYZ == True:
+        #     plot.paint_xyz()
+        # if PaintRaw == True:
+        #     plot.paint_raw()
+        # if PaintDMP == True:
+        #     plot.paint_dmp()
+        # if PaintPaper == True:
+        #     plot.paint_paper()
+        # if PaintSegment == True:
+        #     plot.paint_segment()
+        # if PaintSeg_XZ == True:
+        #     plot.paint_seg_xz()
+        # if Creat_letter == True:
+        #     plot.create_letter()
+
+
+        # plot.paint_paper_kernel_number(10, 310, 10)
+        # plot.paint_paper()
+        plot.paint_seg_xz()

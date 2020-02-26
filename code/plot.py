@@ -74,65 +74,69 @@ class DataPlot:
         # x, y, z
         plt.figure(1)
         plt.subplot(311)
-        plt.title(" The X Z Y coordinate change according to Time")
+        # plt.title(" The X Z Y coordinate change according to Time")
         plt.plot(time, self.full_traj[0])
-        plt.ylabel("X / m")
+        plt.ylabel("x(m)")
+        plt.xticks([])
 
         plt.subplot(312)
         plt.plot(time, self.full_traj[2])
-        plt.ylabel("Z / m")
+        plt.ylabel("y(m)")
+        plt.xticks([])
 
         plt.subplot(313)
         plt.plot(time, self.full_traj[1])
         plt.ylim(0, 0.2)
-        plt.ylabel("Y / m")
+        plt.ylabel("z(m)")
 
-        plt.xlabel(" Time (s)")
-        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/XYZ')
+        plt.xlabel(" time (s)")
+        # plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/XYZ')
         # plt.interactive(False)
         plt.show()
 
         # dx, dy, dz
         plt.figure(2)
         plt.subplot(311)
-        plt.title(" The dX dZ dY coordinate change according to Time")
+        # plt.title(" The dX dZ dY coordinate change according to Time")
         plt.plot(time, self.dfull_traj[0])
-        plt.ylabel("dX / m")
+        plt.ylabel(r"$v_x (m/s)$")
+        plt.xticks([])
 
         plt.subplot(312)
         plt.plot(time, self.dfull_traj[2])
-        plt.ylabel("dZ / m")
+        plt.ylabel(r"$v_y (m/s)$")
+        plt.xticks([])
 
         plt.subplot(313)
         plt.plot(time, self.dfull_traj[1])
         # plt.ylim(0, 0.2)
-        plt.ylabel("dY / m")
+        plt.ylabel(r"$v_z (m/s)$")
 
-        plt.xlabel(" Time (s)")
-        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dXYZ')
+        plt.xlabel(" time (s)")
+        # plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dXYZ')
         plt.interactive(False)
         plt.show()
 
 
         # ddx, ddy, ddz
-        plt.figure(3)
-        plt.subplot(311)
-        plt.title(" The ddX ddZ ddY coordinate change according to Time")
-        plt.plot(time, self.ddfull_traj[0])
-        plt.ylabel("ddX / m")
+        # plt.figure(3)
+        # plt.subplot(311)
+        # plt.title(" The ddX ddZ ddY coordinate change according to Time")
+        # plt.plot(time, self.ddfull_traj[0])
+        # plt.ylabel("ddX / m")
 
-        plt.subplot(312)
-        plt.plot(time, self.ddfull_traj[2])
-        plt.ylabel("ddZ / m")
+        # plt.subplot(312)
+        # plt.plot(time, self.ddfull_traj[2])
+        # plt.ylabel("ddZ / m")
 
-        plt.subplot(313)
-        plt.plot(time, self.ddfull_traj[1])
-        # plt.ylim(0, 0.2)
-        plt.ylabel("ddY / m")
+        # plt.subplot(313)
+        # plt.plot(time, self.ddfull_traj[1])
+        # # plt.ylim(0, 0.2)
+        # plt.ylabel("ddY / m")
 
-        plt.xlabel(" Time (s)")
-        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/ddXYZ')
-        plt.show()
+        # plt.xlabel(" Time (s)")
+        # plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/ddXYZ')
+        # plt.show()
 
     def paint_raw(self):
         ax = plt.subplot(projection='3d')
@@ -145,26 +149,45 @@ class DataPlot:
         # plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/%s_raw.png' % self.name)
 
     def paint_dmp(self):
-        ax = plt.subplot(projection='3d')
+        # ax = plt.subplot(projection='3d')
         dmp_traj = dmp_process(100, self.full_traj, self.dfull_traj, self.ddfull_traj)
-        ax.scatter(self.full_traj[0], self.full_traj[1], self.full_traj[2], c='r')
-        ax.scatter(dmp_traj[0], dmp_traj[1], dmp_traj[2], c='g')
-        plt.show()
+        # ax.scatter(self.full_traj[0], self.full_traj[1], self.full_traj[2], c='r')
+        # ax.scatter(dmp_traj[0], dmp_traj[1], dmp_traj[2], c='g')
+        # plt.show()
         generate_data(dmp_traj, self.name)
         # plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/%s_dmp.png' % self.name)
 
     def paint_paper(self):
+        from matplotlib import rcParams
+        # rcParams['font.family'] = 'sans-serif'
+        plt.rcParams["font.family"] = "Times New Roman"
+        font = {'family' : 'normal',
+                # 'weight' : 'bold',
+                'size'   : 12}
+        plt.rc('font', **font)
+        font1 = {'family' : 'normal',
+                # 'weight' : 'bold',
+                'size'   : 14}
+
         number = np.arange(0, len(self.full_traj[0])).tolist()
         goal_error = 0.0
         dmp_kind = False
+
         dmp100 = dmp_process(200, self.full_traj, self.dfull_traj, self.ddfull_traj, 0, 0, dmp_kind, 1)
         dmp300 = dmp_process(200, self.full_traj, self.dfull_traj, self.ddfull_traj, 0, 0, dmp_kind, 0)
-        # dmp600 = dmp_process(100, self.full_traj, self.dfull_traj, self.ddfull_traj)
         dmp800 = dmp_process(200, self.full_traj, self.dfull_traj, self.ddfull_traj, 0, 0, dmp_kind, 3)
         dmp600 = dmp_process(200, self.full_traj, self.dfull_traj, self.ddfull_traj, 0, 0, dmp_kind, 2)
         # error1 = [math.sqrt((dmp100[0][i] - self.full_traj[0][i])**2 + (dmp100[2][i] - self.full_traj[2][i])**2) for i in range(len(self.full_traj[0]))]
         # error2 = [math.sqrt((dmp300[0][i] - self.full_traj[0][i])**2 + (dmp300[2][i] - self.full_traj[2][i])**2) for i in range(len(self.full_traj[0]))]
-        # error3 = [math.sqrt((dmp600[0][i] - self.full_traj[0][i])**2 + (dmp600[2][i] - self.full_traj[2][i])**2) for i in range(len(self.full_traj[0]))]
+        # error3 = [math.sqrt((dmp800[0][i] - self.full_traj[0][i])**2 + (dmp800[2][i] - self.full_traj[2][i])**2) for i in range(len(self.full_traj[0]))]
+        # error4 = [math.sqrt((dmp600[0][i] - self.full_traj[0][i])**2 + (dmp600[2][i] - self.full_traj[2][i])**2) for i in range(len(self.full_traj[0]))]
+        print("---------------------------Finished DMP, start plotting!!!-------------------------------------")
+
+        error1 = np.sqrt(np.sum((np.array(dmp100).reshape(-1, 3) - np.array(self.full_traj).reshape(-1, 3))**2))
+        error2 = np.sqrt(np.sum((np.array(dmp300).reshape(-1, 3) - np.array(self.full_traj).reshape(-1, 3))**2))
+        error3 = np.sqrt(np.sum((np.array(dmp800).reshape(-1, 3) - np.array(self.full_traj).reshape(-1, 3))**2))
+        error4 = np.sqrt(np.sum((np.array(dmp600).reshape(-1, 3) - np.array(self.full_traj).reshape(-1, 3))**2))
+        print(error1, error2, error3, error4)
 
         if dmp_kind == False:
             name1 =  self.name + str(goal_error) + 'a.png'
@@ -173,20 +196,21 @@ class DataPlot:
             name1 = 'good_' + self.name + str(goal_error) + 'a.png'
             name2 = 'good_' + self.name + str(goal_error) + 'a_Euclidean_distance.png'
         
-        plt.figure(1)
+        plt.figure(1, figsize=(12, 15))
         plt.plot([ -i for i in self.full_traj[0]], self.full_traj[2], 'black', label='original trajectory', linewidth=3, alpha=0.6)
         plt.plot([ -i for i in dmp100[0]], dmp100[2], 'g', label='standard gaussian kernel')
-        plt.plot([ -i for i in dmp300[0]], dmp300[2], 'r', label='truncated kernel, width = 1/2N' )
-        plt.plot([ -i for i in dmp800[0]], dmp800[2], 'b', label='truncated kernel, width = 1/3N' )
-        plt.plot([ -i for i in dmp600[0]], dmp600[2], 'orange', label='truncated kernel, width = 5/N' )
+        plt.plot([ -i for i in dmp300[0]], dmp300[2], 'r', label=r'truncated kernel, width = $\frac{1}{2N}$' )
+        plt.plot([ -i for i in dmp800[0]], dmp800[2], 'b', label=r'truncated kernel, width = $\frac{1}{3N}$' )
+        plt.plot([ -i for i in dmp600[0]], dmp600[2], 'orange', label=r'truncated kernel, width = $\frac{5}{N}$' )
         # plt.plot([ -i for i in self.full_traj[0]], self.full_traj[2], 'r', label='original trajectory', linewidth=5, alpha=0.6)
         # plt.plot([ -i for i in dmp100[0]], dmp100[2], 'g', label='DMP kernel = 20')
         # plt.plot([ -i for i in dmp300[0]], dmp300[2], 'chocolate', label='DMP kernel = 50' )
         # plt.plot([ -i for i in dmp600[0]], dmp600[2], 'b', label='DMP kernel = 200' )
         # plt.plot([ -i for i in dmp800[0]], dmp800[2], 'b', label='DMP kernel = 200' )
-        plt.xlabel('X(m)')
-        plt.ylabel('Y(m)')
-        # plt.title('Comparision between trajectory computed by different kernel number')
+        plt.xlabel('x(m)', fontdict=font1)
+        plt.ylabel('y(m)', fontdict=font1)
+        plt.xticks(np.arange(0.4, 0.8, 0.1))
+        plt.yticks(np.arange(0.1, 0.5, 0.1))
         plt.legend(loc='upper right', frameon=False)            
         plt.interactive(False)
         # plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dmp_compare/%s' % name1)            
@@ -217,61 +241,65 @@ class DataPlot:
         plt.ylabel('Y/m')
         plt.title('Segmentated trajectory and trajectory computed by DMP of writing belongs to %s' % self.name[2:])
         plt.legend(loc='upper right', frameon=False)
-        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/segment/%s_segment.png' % self.name)
+        # plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/segment/%s_segment.png' % self.name)
         plt.show()
 
     def paint_seg_xz(self):
+        from matplotlib import rcParams
+        # rcParams['font.family'] = 'sans-serif'
+        plt.rcParams["font.family"] = "Times New Roman"
+        font = {'family' : 'normal',
+                # 'weight' : 'bold',
+                'size'   : 14}
+        plt.rc('font', **font)
         seg = Segmentation(self.full_traj, self.dfull_traj, self.ddfull_traj)
         stroke2 = seg.segmentate_two()[1]
         vel, acc = get_vel_and_acc(stroke2, self.freq)
 
         goal_error = 0.1
-        dmp_kind = True
 
-        dmp_stroke = dmp_process(200, stroke2, vel, acc, 0, goal_error, dmp_kind)
-        if dmp_kind == False:
-            name1 =  str(goal_error) + '_D_xy_segment.png'
-            name2 =  str(goal_error) + '_D_xy_absolute_distance.png'
-        else:
-            name1 = 'good_' + str(goal_error) + '_D_xy_segment.png'
-            name2 = 'good_' + str(goal_error) + '_D_xy_absolute_distance.png'
+        good_dmp = dmp_process(200, stroke2, vel, acc, 0, goal_error, True)
+        bad_dmp = dmp_process(200, stroke2, vel, acc, 0, goal_error, false)
+        
         
         plt.figure(1)
-        plt.plot((1/self.freq)*np.arange(len(stroke2[0])), [-i for i in stroke2[0]], label='original x coordinate', linewidth=5, alpha=0.6)
-        plt.plot((1/self.freq)*np.arange(len(stroke2[0])), [-i for i in dmp_stroke[0]], label='dmp x coordinate')
-        plt.xlabel('t/sec')
-        plt.ylabel('x/m')
-        plt.title('x/m coordinate changing with time/sec')
+        plt.plot((1/self.freq)*np.arange(len(stroke2[0])), [-i for i in stroke2[0]], "b", label='ground truth', linewidth=5, alpha=0.6)
+        plt.plot((1/self.freq)*np.arange(len(stroke2[0])), [-i for i in good_dmp[0]], "r", label='DMP*')
+        plt.xlabel('t(s)')
+        plt.ylabel('x(m)')
+        # plt.title('x/m coordinate changing with time/sec')
         plt.legend(loc='upper right', frameon=False)
-        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dmp_compare/%s'% name1)
+        # plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dmp_compare/%s'% name1)
         plt.interactive(False)
         plt.show()
 
-        plt.figure(2)
-        error = [abs(dmp_stroke[0][i] - stroke2[0][i]) for i in range(len(stroke2[0]))]
-        plt.plot(range(len(stroke2[0])), error, 'b')
-        plt.xlabel('N')
-        plt.ylabel('Absolute distance/m')
-        plt.title('Absolute distance of original trajectory and trajectory computed by DMP')
-        plt.legend(loc='upper right', frameon=False)
-        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dmp_compare/%s' % name2)
-        plt.show()
+        # plt.figure(2)
+        # error = [abs(dmp_stroke[0][i] - stroke2[0][i]) for i in range(len(stroke2[0]))]
+        # plt.plot(range(len(stroke2[0])), error, 'b')
+        # plt.xlabel('N')
+        # plt.ylabel('absolute distance(m)')
+        # # plt.title('Absolute distance of original trajectory and trajectory computed by DMP')
+        # plt.legend(loc='upper right', frameon=False)
+        # # plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dmp_compare/%s' % name2)
+        # plt.show()
 
     def create_letter(self):
         seg = Segmentation(self.full_traj, self.dfull_traj, self.ddfull_traj)
         strokes = seg.segmentate_two()
 
         # create p
-        # for stroke in strokes:
-        #     vel, acc = get_vel_and_acc(stroke, self.freq)
-        #     if strokes.index(stroke) == 0:
-        #         dmp_stroke = dmp_process(200, stroke, vel, acc)
-        #     if strokes.index(stroke) == 1:
-        #         z_change = dmp_process(200, stroke, vel, acc, 0, 0.15)
-        #         dmp_stroke = dmp_process(200, stroke, vel, acc)
-        #         dmp_stroke[2] = z_change[2]
-        #     # plt.plot([ -i for i in stroke[0]], stroke[2], label='stroke %d' % strokes.index(stroke), linewidth=5, alpha=0.6)
-        #     plt.plot([ -i for i in dmp_stroke[0]], dmp_stroke[2], label='DMP_stroke %d' % strokes.index(stroke))
+        for stroke in strokes:
+            vel, acc = get_vel_and_acc(stroke, self.freq)
+            if strokes.index(stroke) == 0:
+                dmp_stroke = dmp_process(200, stroke, vel, acc)
+                generate_data(dmp_stroke, self.name+"1")
+            if strokes.index(stroke) == 1:
+                z_change = dmp_process(200, stroke, vel, acc, 0, 0.15)
+                dmp_stroke = dmp_process(200, stroke, vel, acc)
+                dmp_stroke[2] = z_change[2]
+                generate_data(dmp_stroke, self.name+"2")
+            # plt.plot([ -i for i in stroke[0]], stroke[2], label='stroke %d' % strokes.index(stroke), linewidth=5, alpha=0.6)
+            plt.plot([ -i for i in dmp_stroke[0]], dmp_stroke[2], label='DMP_stroke %d' % strokes.index(stroke))
 
         # create B
         # for stroke in strokes:
@@ -291,20 +319,52 @@ class DataPlot:
         # plt.plot([ -i for i in dmp_stroke2[0]], dmp_stroke2[2], label='DMP_stroke 3')
 
         # create D
-        for stroke in strokes:
-            vel, acc = get_vel_and_acc(stroke, self.freq)
-            zdmp_stroke = dmp_process(200, stroke, vel, acc, 0.0, -0.1)
-            xdmp_stroke = dmp_process(200, stroke, vel, acc, 0.0, 0.1)
-            plt.plot([ -i for i in xdmp_stroke[0]], zdmp_stroke[2], label='DMP_stroke %d' % strokes.index(stroke))
+        # for stroke in strokes:
+        #     vel, acc = get_vel_and_acc(stroke, self.freq)
+        #     zdmp_stroke = dmp_process(200, stroke, vel, acc, 0.0, -0.1)
+        #     xdmp_stroke = dmp_process(200, stroke, vel, acc, 0.0, 0.1)
+        #     plt.plot([ -i for i in xdmp_stroke[0]], zdmp_stroke[2], label='DMP_stroke %d' % strokes.index(stroke))
+
+
 
         plt.xticks(np.arange(0.35, 0.70, step=0.05))
         plt.yticks(np.arange(0.10, 0.40, step=0.05))
-        plt.xlabel('X/m')
-        plt.ylabel('Y/m')
-        plt.title('Create new letter by DMP of writing belongs to %s' % self.name[2:])
+        plt.xlabel('x(m)')
+        plt.ylabel('y(m)')
+        # plt.title('Create new letter by DMP of writing belongs to %s' % self.name[2:])
         plt.legend(loc='upper right', frameon=False)
         # plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/%s_new_letter.png' % self.name)
-        plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/%s_B.png')
+        # plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/%s_B.png')
         plt.show()
 
+    def paint_paper_kernel_number(self, start_k, end_k, step):
+        '''
+        Used for painting the error change according to kernel number
+        @start_k smallest kernel number
+        @end_k largest kernel number
+        @step step of kernel numbers 
+        '''
+        from matplotlib import rcParams
+        plt.rcParams["font.family"] = "Times New Roman"
+        font = {'family' : 'normal',
+                'size'   : 16}
+        plt.rc('font', **font)
+
+        # number = range(len(self.full_traj[0]))
+        kernel_numbers = np.arange(start_k, end_k, step)
+        errors = np.zeros((kernel_numbers.shape[0], ))
+        for i, kernel_number in enumerate(kernel_numbers):
+            dmp = dmp_process(kernel_number, self.full_traj, self.dfull_traj, self.ddfull_traj, 0, 0)
+            error = np.sqrt(np.sum((np.array(dmp).reshape(-1, 3) - np.array(self.full_traj).reshape(-1, 3))**2))
+            errors[i] = error
+        plt.figure(1, figsize=(10, 15))
+        plt.plot(kernel_numbers, errors, 'b--', label='Euclidean Error' )
+        plt.xlabel('kernel number')
+        plt.ylabel('Euclidean Error (m)')
+        # plt.xticks(np.arange(0.4, 0.8, 0.1))
+        # plt.yticks(np.arange(0.1, 0.5, 0.1))
+        plt.legend(loc='upper right', frameon=False)            
+        plt.interactive(False)
+        # plt.savefig('/home/jingwu/Desktop/CS8803/Project/Dec/dmp_compare/%s' % name1)            
+        plt.show()
         
